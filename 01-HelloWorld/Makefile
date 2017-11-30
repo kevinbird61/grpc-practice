@@ -14,7 +14,7 @@ GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
 PROTOS_PATH = ../protos/
 
 # doc config
-DOCS_LAYOUT = jasonm23-dark
+DOCS_LAYOUT = thomasf-solarizedcsslight
 
 vpath %.proto $(PROTOS_PATH)
 
