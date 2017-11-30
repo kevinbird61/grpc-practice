@@ -38,16 +38,16 @@ grpc_server: helloworld.pb.o helloworld.grpc.pb.o grpc_server.o
 # Please make sure you have been install nodejs
 doc_page:
 	# install doc generator
-	cd ../doc/ && npm install 
+	cd ../docs/ && npm install 
 	# 01-HelloWorld
-	../doc/node_modules/markdown-styles/bin/generate-md \
+	../docs/node_modules/markdown-styles/bin/generate-md \
 		--layout $(DOCS_LAYOUT) \
-		--input ../doc/01-HelloWorld \
-		--output ../doc/01-HelloWorld
+		--input ../docs/01-HelloWorld \
+		--output ../docs/01-HelloWorld
 
 clean:
 	rm -f *.o *.pb.cc *.pb.h grpc_client grpc_server
 
 clean_doc:
-	rm -rf ../doc/01-HelloWorld/assets
-	rm -f ../doc/01-HelloWorld/*.html
+	rm -rf ../docs/01-HelloWorld/assets
+	rm -f ../docs/01-HelloWorld/*.html
