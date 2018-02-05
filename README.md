@@ -4,5 +4,16 @@
 
 # 教學目錄
 
-## [01-HelloWorld](https://kevinbird61.github.io/grpc-practice/01-HelloWorld/)
-- [專案位置](https://github.com/kevinbird61/grpc-practice/tree/master/01-HelloWorld)
+## [Learning gRPC](https://kevinbird61.github.io/grpc-practice/)
+- [Lesson 1 - Simple HelloWorld 專案位置](https://github.com/kevinbird61/grpc-practice/tree/master/01-HelloWorld)
+
+# Build 
+
+## docs
+
+* 進入 docs/ 資料夾下做 `make` 即可
+
+## tutorial program
+
+* 進入各個資料夾底下做 `make` 即可
+* 各個資料夾內都有各自獨立的 README.md 做說明！

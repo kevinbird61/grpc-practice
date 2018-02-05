@@ -1,0 +1,78 @@
+<!-- "doc" type, with tabs usage as template--><!-- Author: Kevin Cyu--><!-- include mixins--><!-- mixin - list--><!-- main--><!DOCTYPE html><html><!-- include header--><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Learning-gRPC</title><link rel="stylesheet" href="./asset/highlight.min.css"/><link rel="stylesheet" href="./asset/paper.min.css"/><link rel="stylesheet" href="./asset/monokai.css"/><link rel="stylesheet" href="./asset/main.css"/><link rel="stylesheet" href="./asset/cn-font.css"/><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script src="./asset/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body><div class="container"><div class="paper"><div class="demo-title" id="top"><div class="row flex-center"><div class="text-center"> <h1 class=".cn">Learning-gRPC</h1></div></div></div><div class="section"><div class="flex-spaces tabs">
+<input id="tab1" type="radio" name="tabs" checked/>
+<label for="tab1">01 HelloWorld</label>
+
+<div class="content" id="content1"><p><h1>01-HelloWorld 教學</h1>
+<h2>開始</h2>
+<h3>安裝 gRPC</h3>
+<ul>
+<li>在使用這篇教學前，需要安裝 gRPC 於你的系統上
+依照以下的指示來做操作：<a href="https://github.com/grpc/grpc/tree/master/src/cpp">安裝說明</a></li>
+</ul>
+<h3>說明</h3>
+<ul>
+<li>本章教學主要使用來自 grpc 官方教學中的 helloworld 教學</li>
+<li>說明原始碼位置於專案 <code>grpc-practice/01-HelloWorld</code> 底下</li>
+<li>而本章主要著重在：
+<ul>
+<li><strong>如何編譯 protocol buffer</strong></li>
+<li><strong>如何使用 pb 編譯後產生的檔案</strong>（也是就是 grpc 的主要功能）</li>
+</ul>
+</li>
+</ul>
+<h3>使用</h3>
+<pre><code class="language-bash"># 產生 grpc 所有程式碼
+$ make
+
+# 清理所有 grpc 編譯產生 object 檔案
+$ make clean
+
+# 產生 document(透過轉換 markdown 成 static web)
+$ make doc_page
+
+# 清除 document 檔案
+$ make clean_doc
+</code></pre>
+<h2>gRPC client/server</h2>
+<h3>編譯 protocol buffer code</h3>
+<ul>
+<li>透過由 <code>protoc</code> 這個 protocol buffer compiler，並且利用他來編譯產生 <code>.pb.cc</code>、<code>.pb.h</code>、<code>.grpc.pb.cc</code>、<code>.grpc.pb.h</code> 的相依性檔案</li>
+<li>分別透過兩次編譯，來產生：
+<ul>
+<li>針對 <em><strong>service</strong></em> 定義所產生的: <code>*.grpc.pb.*</code></li>
+<li>針對 <em><strong>message</strong></em> 定義所產生的: <code>*.pb.*</code></li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-bash"># 第一次編譯
+$ protoc -I path_to_your_protos --grpc_out=. --plugin=protoc-gen-grpc=path_to_your_cpp_plugin yourfile.proto
+
+# 第二次編譯
+$ protoc -I path_to_your_protos --cpp_out=. yourfile.proto 
+</code></pre>
+<ul>
+<li>
+<p>第一次編譯時，會產生對應的 <code>*.grpc.pb.*</code>，同時也是當初在 yourfile.proto 裡頭定義的 service class</p>
+<ul>
+<li>這支檔案內會需要 <code>*.pb.*</code> 的定義，因此需要第二次編譯</li>
+<li><code>path_to_your_protos</code>: 這邊填入你 proto files 放置的位置</li>
+<li><code>--grpc_out=&lt;path&gt;</code>: 這邊指定輸出的檔案位置</li>
+<li><code>--plugin=...</code>: 這邊是指定轉換的格式，在這邊使用到的是 cpp，可以在 terminal 輸入 <code>which grpc_cpp_plugin</code> 來找到 cpp plugin 在你的開發環境的位置</li>
+<li>最後就是要轉換的那支 <code>.proto</code></li>
+</ul>
+</li>
+<li>
+<p>第二次編譯，會產生 <code>*.pb.*</code>，同時也是當初 yourfile.proto 裡頭定義的 message 的部份</p>
+<ul>
+<li>這支檔案則是主要提供這些方便功能的主要程式碼</li>
+</ul>
+</li>
+<li>
+<p>到此為止，我們便成功的使用原有 protocol buffer 檔案轉換成為 c++ 可以使用的程式碼</p>
+</li>
+</ul>
+<h3>實作 gRPC 的 server</h3>
+<p>(待補上)</p>
+<h3>實作 gRPC 的 client</h3>
+<p>(待補上)</p>
+</p></div></div></div><div class="to-top"><a class="paper-btn margin" href="#top">Top</a></div><div class="row flex-right"><p>Created by <span class="badge secondary">@ToolBuddy/papoGen(papercss)</span></p></div></div></div></body></html>
