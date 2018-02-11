@@ -33,7 +33,3 @@ grpc_server: helloworld.pb.o helloworld.grpc.pb.o grpc_server.o
 
 clean:
 	rm -f *.o *.pb.cc *.pb.h grpc_client grpc_server
-
-clean_doc:
-	rm -rf ../docs/01-HelloWorld/assets
-	rm -f ../docs/01-HelloWorld/*.html

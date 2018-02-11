@@ -55,8 +55,28 @@ $ protoc -I path_to_your_protos --cpp_out=. yourfile.proto
 
 - 到此為止，我們便成功的使用原有 protocol buffer 檔案轉換成為 c++ 可以使用的程式碼
 
-### 實作 gRPC 的 server 
-(待補上)
-
 ### 實作 gRPC 的 client
-(待補上)
+
+Client 的部份可以看到，在 header files 的部份需要 include 來源 `.proto` 所產生的相依檔案 - `helloworld.grpc.pb.h`, 以及 C++ 的 grpc core library - `grpc++/grpc++.h`
+
+再來就可以引入 `.proto` 內的 message, services 做使用！這邊可以看到程式所定義的 namespace 有 service 的 Greeter, 以及 message 的 HelloRequest 以及 HelloReply
+
+有了這些 class, 使用者便可以利用這些來做一個封裝 - `GreeterClient` 的 class 產生！ 如此一來我們便可以利用這些 grpc 幫我們產生好的東西來做 RPC 傳輸的動作（在這個 scenario 當中，是 client 與 server 間相互傳遞一個問候語）
+
+詳細對應的操作可以看原始碼 `01-HelloWorld` 中的 `grpc_client.cpp`.
+
+### 實作 gRPC 的 server 
+
+Server 的部份在 include 的部份也和 client 相同
+
+而在 server 的部份，則是單純做一個 listening 的動作，透過 grpc 提供的 `ServerBuilder` 來建立 service (一樣繼承 `.proto` 所實作的 service - `Greeter` 來做新的實作)， 並把這個 service 加入到 server 的 class 當中（由 grpc 提供），完成後即可等待使用者的呼叫
+
+這邊可以看到，在 client 與 server 中 message class 對於 access 自己的 attribute 的 method 則是以 `set_` 加上 attribute name 做命名
+
+
+## 小結
+
+grpc 的使用，主要還是透過其本身提供的 library 做實作，所以在使用前需要詳細閱讀其規格與定義！
+
+不過可以從這個例子看到，在實作一個 RPC 服務來說， grpc 已經為我們做了大部份底層的功夫，剩餘的部份只需要我們去寫我們要的規格（protocol）以及 client, server 的主架構即可使用！
+
