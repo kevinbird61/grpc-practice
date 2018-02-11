@@ -13,9 +13,6 @@ GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
 # define protos location
 PROTOS_PATH = ../protos/
 
-# doc config
-DOCS_LAYOUT = thomasf-solarizedcsslight
-
 vpath %.proto $(PROTOS_PATH)
 
 all: grpc_client grpc_server
@@ -33,17 +30,6 @@ grpc_server: helloworld.pb.o helloworld.grpc.pb.o grpc_server.o
 .PRECIOUS: %.pb.cc
 %.pb.cc: %.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
-
-# Making doc (Static Html) from markdown-styles
-# Please make sure you have been install nodejs
-doc_page:
-	# install doc generator
-	cd ../docs/ && npm install 
-	# 01-HelloWorld
-	../docs/node_modules/markdown-styles/bin/generate-md \
-		--layout $(DOCS_LAYOUT) \
-		--input ../docs/01-HelloWorld \
-		--output ../docs/01-HelloWorld
 
 clean:
 	rm -f *.o *.pb.cc *.pb.h grpc_client grpc_server
