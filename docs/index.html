@@ -1,14 +1,14 @@
-<!-- "doc" type, with tabs usage as template--><!-- Author: Kevin Cyu--><!-- include mixins--><!-- mixin - list--><!-- main--><!DOCTYPE html><html><!-- include header--><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Learning-gRPC</title><link rel="stylesheet" href="./asset/highlight.min.css"/><link rel="stylesheet" href="./asset/paper.min.css"/><link rel="stylesheet" href="./asset/monokai.css"/><link rel="stylesheet" href="./asset/main.css"/><link rel="stylesheet" href="./asset/cn-font.css"/><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script src="./asset/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body><div class="container"><div class="paper"><div class="demo-title" id="top"><div class="row flex-center"><div class="text-center"> <h1 class=".cn">Learning-gRPC</h1></div></div></div><div class="section"><div class="flex-spaces tabs">
-<input id="tab1" type="radio" name="tabs" checked/>
-<label for="tab1">00 Protobuf</label>
+<!-- "doc" type, with tabs usage as template--><!-- Author: Kevin Cyu--><!-- Include mixin--><!-- mixin - list--><!-- Main--><!DOCTYPE html><html><!-- Include head--><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Learning-gRPC</title><!-- Select the theme--><link rel="stylesheet" href="./asset/paper.min.css"><link rel="stylesheet" href="./asset/monokai.css"><link rel="stylesheet" href="./asset/main.css"><link rel="stylesheet" href="./asset/cn-font.css"><link rel="stylesheet" href="./asset/highlight.min.css"><script type="text/x-mathjax-config">MathJax.Hub.Config({ jax: ["input/TeX", "output/HTML-CSS"], extensions: ["tex2jax.js"], "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }, tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], displayMath: [ ["$$","$$"], ["\\[", "\\]"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno" }, TeX: { noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } } }, messageStyle: "none"});</script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="./asset/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body><div class="container"><div class="paper"><div class="demo-title" id="top"><div class="row flex-center"><div class="text-center"> <h1 class=".cn" id="Learning-gRPC">Learning-gRPC</h1></div></div></div><div class="section"><div class="flex-spaces tabs">
+<input id="tab1" type="radio" name="tabs" checked="">
+<label id="label_tab1" for="tab1">00 Protobuf</label>
 
-<input id="tab2" type="radio" name="tabs"/>
-<label for="tab2">01 HelloWorld</label>
+<input id="tab2" type="radio" name="tabs">
+<label id="label_tab2" for="tab2">01 HelloWorld</label>
 
-<div class="content" id="content1"><p><h1>About google protobuf</h1>
+<div class="content" id="content1"><p></p><h1 id="About%20google protobuf">About google protobuf</h1>
 <p>這邊主要探討關於 protobuf 的格式與其對應的意義</p>
 <p>我們就以下列這個程式碼來做探討：</p>
-<pre><code class="language-pb">syntax = &quot;proto2&quot;;
+<pre><code class="language-pb">syntax = "proto2";
 
 package tutorial;
 
@@ -35,7 +35,7 @@ message AddressBook {
   repeated Person people = 1;
 }
 </code></pre>
-<h2>Package</h2>
+<h2 id="Package">Package</h2>
 <ul>
 <li>
 <p>Protobuf 以 <code>package</code> 作為開始，透過 package 指定名稱的方式來<strong>防止<code>命名衝突</code>的問題</strong></p>
@@ -44,9 +44,9 @@ message AddressBook {
 <p>而在 python 的 grpc 版本當中， package 則由 directory structure 來做決定; 所以在當 python 版本運行時，由 proto 定義的 package 則會失去作用</p>
 </li>
 </ul>
-<h2>Message</h2>
+<h2 id="Message">Message</h2>
 <p>先來看看使用 <code>message</code> 作為定義關鍵字的使用：</p>
-<h3>Field Type</h3>
+<h3 id="Field%20Type">Field Type</h3>
 <ul>
 <li>
 <p>Protobuf 也定義許多 type 的關鍵字：</p>
@@ -72,20 +72,20 @@ message AddressBook {
 </ul>
 </li>
 </ul>
-<h3>=1, =2 ...</h3>
+<h3 id="=1,%20=2 ...">=1, =2 ...</h3>
 <ul>
 <li>
 <p>在上面範例 code 當中可以看到每個 attribute 都被賦予一個等號數值，這裡並不是單純的附值！ 而是於 protobuf 中特殊的使用!</p>
 </li>
 <li>
-<p>這些數字標記用來給予一個獨一無二的 &quot;tag&quot; 給這個 field， 作為後續 binary encoding 使用</p>
+<p>這些數字標記用來給予一個獨一無二的 "tag" 給這個 field， 作為後續 binary encoding 使用</p>
 <ul>
 <li>而 range 在 <code>1~15</code> 中的 tag，則會比其他大於 15 的數值所使用的 bytes 上會小 1 個 byte</li>
 <li>可以視其為一個 optimization -&gt; 當這個欄位會被 <strong>重複使用(e.g. <code>repeated</code>)</strong>, 或是<strong>經常被使用</strong> 的話， 則可以利用這個 tag 的特性，藉由賦予其較小數值的 tag，來減少其使用的 bytes 數量</li>
 </ul>
 </li>
 </ul>
-<h3>Annotation</h3>
+<h3 id="Annotation">Annotation</h3>
 <ul>
 <li>每個 field 在除了定義其 <code>field type</code> 之外，也會定義他的 <em>annotation</em>:
 <ul>
@@ -109,7 +109,7 @@ message AddressBook {
 </ul>
 </li>
 </ul>
-<h2>Service</h2>
+<h2 id="Service">Service</h2>
 <p>在來看到 <code>service</code> 的使用</p>
 <p>當你想要透過 RPC (Remote Procedure Call) 來使用你所定義的 <code>message</code> 時，則可以透過 <code>service</code> 這個定義字來建立一個 RPC 服務介面於 <code>.proto</code> 當中</p>
 <p>剩餘的部份則透過 protobuf compiler 來產生 interface 相依的程式碼（你所選擇的程式）及 stub</p>
@@ -132,7 +132,7 @@ SearchResponse response;
 void DoSearch() {
   // You provide classes MyRpcChannel and MyRpcController, which implement
   // the abstract interfaces protobuf::RpcChannel and protobuf::RpcController.
-  channel = new MyRpcChannel(&quot;somehost.example.com:1234&quot;);
+  channel = new MyRpcChannel("somehost.example.com:1234");
   controller = new MyRpcController;
 
   // The protocol compiler generates the SearchService class based on the
@@ -140,7 +140,7 @@ void DoSearch() {
   service = new SearchService::Stub(channel);
 
   // Set up the request.
-  request.set_query(&quot;protocol buffers&quot;);
+  request.set_query("protocol buffers");
 
   // Execute the RPC.
   service-&gt;Search(controller, request, response, protobuf::NewCallback(&amp;Done));
@@ -161,10 +161,10 @@ class ExampleSearchService : public SearchService {
               const SearchRequest* request,
               SearchResponse* response,
               protobuf::Closure* done) {
-    if (request-&gt;query() == &quot;google&quot;) {
-      response-&gt;add_result()-&gt;set_url(&quot;http://www.google.com&quot;);
-    } else if (request-&gt;query() == &quot;protocol buffers&quot;) {
-      response-&gt;add_result()-&gt;set_url(&quot;http://protobuf.googlecode.com&quot;);
+    if (request-&gt;query() == "google") {
+      response-&gt;add_result()-&gt;set_url("http://www.google.com");
+    } else if (request-&gt;query() == "protocol buffers") {
+      response-&gt;add_result()-&gt;set_url("http://protobuf.googlecode.com");
     }
     done-&gt;Run();
   }
@@ -183,10 +183,10 @@ int main() {
   return 0;
 }
 </code></pre>
-<h2>小結</h2>
+<h2 id="小結" class=" cn">小結</h2>
 <p>大致上可以從上面看出 grpc 以及 pb 之間的關係！</p>
 <p>grpc 透過 pb 的特性，實作這些關鍵字作為其生成相依的來源，並為使用者實作 RPC 的介面，以及處理底層網路傳輸方面的程式碼; 讓使用者只需要著重在如何使用即可！</p>
-<h1>Reference</h1>
+<h1 id="Reference">Reference</h1>
 <ul>
 <li>
 <p><a href="https://developers.google.com/protocol-buffers/docs/pythontutorial">Protocol buffer(Python)</a></p>
@@ -195,14 +195,14 @@ int main() {
 <p><a href="https://developers.google.com/protocol-buffers/docs/proto#packages">Language Guide (Protocol buffer)</a></p>
 </li>
 </ul>
-</p></div><div class="content" id="content2"><p><h1>01-HelloWorld 教學</h1>
-<h2>開始</h2>
-<h3>安裝 gRPC</h3>
+<p></p></div><div class="content" id="content2"><p></p><h1 id="01-HelloWorld%20教學" class=" cn">01-HelloWorld 教學</h1>
+<h2 id="開始" class=" cn">開始</h2>
+<h3 id="安裝%20gRPC" class=" cn">安裝 gRPC</h3>
 <ul>
 <li>在使用這篇教學前，需要安裝 gRPC 於你的系統上
 依照以下的指示來做操作：<a href="https://github.com/grpc/grpc/tree/master/src/cpp">安裝說明</a></li>
 </ul>
-<h3>說明</h3>
+<h3 id="說明" class=" cn">說明</h3>
 <ul>
 <li>本章教學主要使用來自 grpc 官方教學中的 helloworld 教學</li>
 <li>說明原始碼位置於專案 <code>grpc-practice/01-HelloWorld</code> 底下</li>
@@ -213,7 +213,7 @@ int main() {
 </ul>
 </li>
 </ul>
-<h3>使用</h3>
+<h3 id="使用" class=" cn">使用</h3>
 <pre><code class="language-bash"># 產生 grpc 所有程式碼
 $ make
 
@@ -226,8 +226,8 @@ $ make doc_page
 # 清除 document 檔案
 $ make clean_doc
 </code></pre>
-<h2>gRPC client/server</h2>
-<h3>編譯 protocol buffer code</h3>
+<h2 id="gRPC%20client/server">gRPC client/server</h2>
+<h3 id="編譯%20protocol buffer code" class=" cn">編譯 protocol buffer code</h3>
 <ul>
 <li>透過由 <code>protoc</code> 這個 protocol buffer compiler，並且利用他來編譯產生 <code>.pb.cc</code>、<code>.pb.h</code>、<code>.grpc.pb.cc</code>、<code>.grpc.pb.h</code> 的相依性檔案</li>
 <li>分別透過兩次編譯，來產生：
@@ -264,16 +264,35 @@ $ protoc -I path_to_your_protos --cpp_out=. yourfile.proto
 <p>到此為止，我們便成功的使用原有 protocol buffer 檔案轉換成為 c++ 可以使用的程式碼</p>
 </li>
 </ul>
-<h3>實作 gRPC 的 client</h3>
+<h3 id="實作%20gRPC 的 client" class=" cn">實作 gRPC 的 client</h3>
 <p>Client 的部份可以看到，在 header files 的部份需要 include 來源 <code>.proto</code> 所產生的相依檔案 - <code>helloworld.grpc.pb.h</code>, 以及 C++ 的 grpc core library - <code>grpc++/grpc++.h</code></p>
 <p>再來就可以引入 <code>.proto</code> 內的 message, services 做使用！這邊可以看到程式所定義的 namespace 有 service 的 Greeter, 以及 message 的 HelloRequest 以及 HelloReply</p>
 <p>有了這些 class, 使用者便可以利用這些來做一個封裝 - <code>GreeterClient</code> 的 class 產生！ 如此一來我們便可以利用這些 grpc 幫我們產生好的東西來做 RPC 傳輸的動作（在這個 scenario 當中，是 client 與 server 間相互傳遞一個問候語）</p>
 <p>詳細對應的操作可以看原始碼 <code>01-HelloWorld</code> 中的 <code>grpc_client.cpp</code>.</p>
-<h3>實作 gRPC 的 server</h3>
+<h3 id="實作%20gRPC 的 server" class=" cn">實作 gRPC 的 server</h3>
 <p>Server 的部份在 include 的部份也和 client 相同</p>
 <p>而在 server 的部份，則是單純做一個 listening 的動作，透過 grpc 提供的 <code>ServerBuilder</code> 來建立 service (一樣繼承 <code>.proto</code> 所實作的 service - <code>Greeter</code> 來做新的實作)， 並把這個 service 加入到 server 的 class 當中（由 grpc 提供），完成後即可等待使用者的呼叫</p>
 <p>這邊可以看到，在 client 與 server 中 message class 對於 access 自己的 attribute 的 method 則是以 <code>set_</code> 加上 attribute name 做命名</p>
-<h2>小結</h2>
+<h2 id="小結" class=" cn">小結</h2>
 <p>grpc 的使用，主要還是透過其本身提供的 library 做實作，所以在使用前需要詳細閱讀其規格與定義！</p>
 <p>不過可以從這個例子看到，在實作一個 RPC 服務來說， grpc 已經為我們做了大部份底層的功夫，剩餘的部份只需要我們去寫我們要的規格（protocol）以及 client, server 的主架構即可使用！</p>
-</p></div></div></div><div class="to-top"><a class="paper-btn margin" href="#top">Top</a></div><div class="row flex-right"><p>Created by <span class="badge secondary">@ToolBuddy/papoGen(papercss)</span></p></div></div></div></body></html>
+<p></p></div></div></div><div class="to-top"><a class="paper-btn margin" href="#top">Top</a><div class="row flex-spaces child-borders"><label class="paper-btn margin" for="modal-1">T.O.C.</label></div></div><input class="modal-state" id="modal-1" type="checkbox"><div class="modal modal-dialog"><label class="modal-bg" for="modal-1"></label><div class="modal-body"><label class="btn-close" for="modal-1">X </label><h4 class="modal-title">Table of Content</h4><h5 class="modal-subtitle">Click and go !</h5><div class="modal-body" id="toc"><h4 class="modal-text">00 Protobuf</h4><hr><ol><li><a href="#About%20google" protobuf="">About google protobuf</a></li><a href="#About%20google" protobuf="">
+</a><ol><a href="#About%20google" protobuf=""></a><li><a href="#About%20google" protobuf=""></a><a href="#Package">Package</a></li><a href="#Package">
+</a><li><a href="#Package"></a><a href="#Message">Message</a></li><a href="#Message">
+</a><ol><a href="#Message"></a><li><a href="#Message"></a><a href="#Field%20Type">Field Type</a></li><a href="#Field%20Type">
+</a><li><a href="#Field%20Type"></a><a href="#=1,%20=2" ...="">=1, =2 ...</a></li><a href="#=1,%20=2" ...="">
+</a><li><a href="#=1,%20=2" ...=""></a><a href="#Annotation">Annotation</a></li><a href="#Annotation">
+</a></ol><li><a href="#Service">Service</a></li><a href="#Service">
+</a><li><a href="#Service"></a><a href="#小結">小結</a></li><a href="#小結">
+</a></ol><li><a href="#Reference">Reference</a></li><a href="#Reference">
+</a></ol><h4 class="modal-text">01 HelloWorld</h4><hr><ol><li><a href="#01-HelloWorld%20教學">01-HelloWorld 教學</a></li><a href="#01-HelloWorld%20教學">
+</a><ol><a href="#01-HelloWorld%20教學"></a><li><a href="#01-HelloWorld%20教學"></a><a href="#開始">開始</a></li><a href="#開始">
+</a><ol><a href="#開始"></a><li><a href="#開始"></a><a href="#安裝%20gRPC">安裝 gRPC</a></li><a href="#安裝%20gRPC">
+</a><li><a href="#安裝%20gRPC"></a><a href="#說明">說明</a></li><a href="#說明">
+</a><li><a href="#說明"></a><a href="#使用">使用</a></li><a href="#使用">
+</a></ol><li><a href="#gRPC%20client/server">gRPC client/server</a></li><a href="#gRPC%20client/server">
+</a><ol><a href="#gRPC%20client/server"></a><li><a href="#gRPC%20client/server"></a><a href="#編譯%20protocol" buffer="" code="">編譯 protocol buffer code</a></li><a href="#編譯%20protocol" buffer="" code="">
+</a><li><a href="#編譯%20protocol" buffer="" code=""></a><a href="#實作%20gRPC" 的="" client="">實作 gRPC 的 client</a></li><a href="#實作%20gRPC" 的="" client="">
+</a><li><a href="#實作%20gRPC" 的="" client=""></a><a href="#實作%20gRPC" 的="" server="">實作 gRPC 的 server</a></li><a href="#實作%20gRPC" 的="" server="">
+</a></ol><li><a href="#小結">小結</a></li><a href="#小結">
+</a></ol></ol></div></div></div><div class="row flex-right"><p>Created by <span class="badge secondary">@ToolBuddy/papoGen(papercss)</span></p></div></div></div></body></html>
